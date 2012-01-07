@@ -1,0 +1,14 @@
+diff -urN kdelibs-3.3.91.orig/kdecore/kstandarddirs.cpp kdelibs-3.3.91/kdecore/kstandarddirs.cpp
+--- kdelibs-3.3.91.orig/kdecore/kstandarddirs.cpp	2005-01-14 21:46:57.964666000 -0800
++++ kdelibs-3.3.91/kdecore/kstandarddirs.cpp	2005-01-14 21:49:53.043136983 -0800
+@@ -833,6 +833,10 @@
+                     if ((local || testdir.exists()) && !candidates->contains(path))
+                         candidates->append(path);
+                 }
++		// UGLY HACK - Chris CHeney
++		if (local && (!strcmp("config", type)))
++		  candidates->append("/etc/kde/");
++		//
+                 local = false;
+             }
+         }

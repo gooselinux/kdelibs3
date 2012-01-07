@@ -1,0 +1,21 @@
+diff -ur kdelibs-3.5.9/kdecore/kcrash.cpp kdelibs-3.5.9-drkonqi-kde4/kdecore/kcrash.cpp
+--- kdelibs-3.5.9/kdecore/kcrash.cpp	2007-01-15 12:34:17.000000000 +0100
++++ kdelibs-3.5.9-drkonqi-kde4/kdecore/kcrash.cpp	2008-07-02 08:24:37.000000000 +0200
+@@ -158,7 +158,7 @@
+           int i = 0;
+ 
+           // argument 0 has to be drkonqi
+-          argv[i++] = "drkonqi";
++          argv[i++] = "/usr/libexec/kde4/drkonqi";
+ 
+ #if defined Q_WS_X11
+           // start up on the correct display
+@@ -325,7 +325,7 @@
+       _exit(253);
+     if(!geteuid() && setuid(getuid()) < 0)
+       _exit(253);
+-    execvp("drkonqi", const_cast< char** >( argv ));
++    execv("/usr/libexec/kde4/drkonqi", const_cast< char** >( argv ));
+     _exit(errno);
+   }
+   else

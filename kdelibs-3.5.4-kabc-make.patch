@@ -1,0 +1,10 @@
+--- kdelibs-3.5.4/kabc/Makefile.am.orig	2006-09-29 12:07:44.000000000 +0200
++++ kdelibs-3.5.4/kabc/Makefile.am	2006-09-29 12:06:01.000000000 +0200
+@@ -55,6 +55,7 @@
+ kab2kabc_LDFLAGS = $(all_libraries) $(KDE_RPATH)
+ kab2kabc_LDADD = libkabc.la ../kab/libkab.la
+ kab2kabc_SOURCES = kab2kabc.cpp
++kab2kabc_COMPILE_FIRST = addressee.h
+ 
+ autostart_DATA = kab2kabc.desktop
+ autostartdir = $(datadir)/autostart

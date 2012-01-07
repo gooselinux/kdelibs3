@@ -1,0 +1,21 @@
+diff -ur kdelibs-3.5.8-kspell2-enchant/kspell2/plugins/Makefile.am kdelibs-3.5.8-kspell2-no-ispell/kspell2/plugins/Makefile.am
+--- kdelibs-3.5.8-kspell2-enchant/kspell2/plugins/Makefile.am	2007-12-21 20:39:46.000000000 +0100
++++ kdelibs-3.5.8-kspell2-no-ispell/kspell2/plugins/Makefile.am	2007-12-22 21:34:10.000000000 +0100
+@@ -6,4 +6,4 @@
+ LIBHSPELLPLUGIN = hspell
+ endif
+ 
+-SUBDIRS = enchant $(LIBASPELLPLUGIN) $(LIBHSPELLPLUGIN) ispell 
++SUBDIRS = enchant $(LIBASPELLPLUGIN) $(LIBHSPELLPLUGIN)
+diff -ur kdelibs-3.5.8-kspell2-enchant/kspell2/plugins/Makefile.in kdelibs-3.5.8-kspell2-no-ispell/kspell2/plugins/Makefile.in
+--- kdelibs-3.5.8-kspell2-enchant/kspell2/plugins/Makefile.in	2007-12-21 20:40:22.000000000 +0100
++++ kdelibs-3.5.8-kspell2-no-ispell/kspell2/plugins/Makefile.in	2007-12-22 21:35:39.000000000 +0100
+@@ -377,7 +377,7 @@
+ xdg_menudir = @xdg_menudir@
+ @include_aspell_plugin_TRUE@LIBASPELLPLUGIN = aspell
+ @include_hspell_plugin_TRUE@LIBHSPELLPLUGIN = hspell
+-SUBDIRS = enchant $(LIBASPELLPLUGIN) $(LIBHSPELLPLUGIN) ispell 
++SUBDIRS = enchant $(LIBASPELLPLUGIN) $(LIBHSPELLPLUGIN)
+ #>- all: all-recursive
+ #>+ 1
+ all: docs-am  all-recursive

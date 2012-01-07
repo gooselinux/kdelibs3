@@ -1,0 +1,26 @@
+--- kdelibs-3.4.91/kdecore/Makefile.am.orig	2005-09-27 17:15:22.000000000 +0200
++++ kdelibs-3.4.91/kdecore/Makefile.am	2005-09-27 17:14:37.000000000 +0200
+@@ -172,14 +172,6 @@
+ kgrantpty_LDFLAGS = $(KDE_USE_PIE) $(KDE_RPATH) $(all_libraries)
+ kgrantpty_LDADD = ./libkdefakes.la
+ 
+-# kgrantpty needs to be installed setuid root
+-install-exec-hook:
+-	@(chown 0 $(DESTDIR)$(bindir)/kgrantpty && chmod 4755 $(DESTDIR)$(bindir)/kgrantpty) || echo "Please make kgrantpty setuid root" >&2
+-	@echo ""
+-	@echo "kgrantpty is by default installed with a set SETUID root bit!"
+-	@echo "This is needed for konsole, etc. to ensure that they can't be eavesdropped."
+-	@echo ""
+-
+ DISTCLEANFILES = kde-config.cpp
+ 
+ DOXYGEN_REFERENCES = dcop kdeui kparts kio
+--- kdelibs-3.4.91/kio/misc/kpac/Makefile.am.orig	2005-09-27 17:15:39.000000000 +0200
++++ kdelibs-3.4.91/kio/misc/kpac/Makefile.am	2005-09-27 17:15:58.000000000 +0200
+@@ -24,6 +24,3 @@
+ 
+ proxyscoutdatadir = $(kde_datadir)/proxyscout
+ proxyscoutdata_DATA = eventsrc
+-
+-install-exec-local:
+-	@(chown root $(DESTDIR)$(bindir)/kpac_dhcp_helper && chmod 4755 $(DESTDIR)$(bindir)/kpac_dhcp_helper) || echo "Please make kpac_dhcp_helper setuid root"

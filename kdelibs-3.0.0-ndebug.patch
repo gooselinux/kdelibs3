@@ -1,0 +1,11 @@
+--- kdelibs/kdecore/kdebug.cpp.ndebug	Mon Mar 11 16:44:31 2002
++++ kdelibs/kdecore/kdebug.cpp	Mon Mar 11 16:45:19 2002
+@@ -224,7 +224,7 @@
+ 	break;
+       }
+ 
+-  short nOutput = kDebug_data->config ? kDebug_data->config->readNumEntry(key, 2) : 2;
++  short nOutput = kDebug_data->config ? kDebug_data->config->readNumEntry(key, 4) : 4;
+ 
+   // If the application doesn't have a QApplication object it can't use
+   // a messagebox.

@@ -1,0 +1,10 @@
+--- kdelibs-3.3.2/kdefx/kcpuinfo.cpp.orig	2004-12-15 11:17:53.549403872 -0500
++++ kdelibs-3.3.2/kdefx/kcpuinfo.cpp	2004-12-15 11:18:26.312348696 -0500
+@@ -30,6 +30,7 @@
+ #include <config.h>
+ #include "kcpuinfo.h"
+ 
++#undef HAVE_PPC_ALTIVEC
+ 
+ #if defined(__GNUC__) || defined(__INTEL_COMPILER)
+ #  define HAVE_GNU_INLINE_ASM

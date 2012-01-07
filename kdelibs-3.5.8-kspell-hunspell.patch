@@ -1,0 +1,303 @@
+diff -ur kdelibs-3.5.8/kdeui/ksconfig.cpp kdelibs-3.5.8-kspell-hunspell/kdeui/ksconfig.cpp
+--- kdelibs-3.5.8/kdeui/ksconfig.cpp	2007-10-08 11:52:12.000000000 +0200
++++ kdelibs-3.5.8-kspell-hunspell/kdeui/ksconfig.cpp	2007-12-22 01:45:47.000000000 +0100
+@@ -1,6 +1,7 @@
+ /* This file is part of the KDE libraries
+    Copyright (C) 1997 David Sweet <dsweet@kde.org>
+    Copyright (C) 2000-2001 Wolfram Diestel <wolfram@steloj.de>
++   Copyright (C) 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+ 
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Library General Public
+@@ -149,6 +150,7 @@
+   clientcombo->insertItem( i18n("Aspell") );
+   clientcombo->insertItem( i18n("Hspell") );
+   clientcombo->insertItem( i18n("Zemberek") );
++  clientcombo->insertItem( i18n("Hunspell") );
+   connect( clientcombo, SIGNAL (activated(int)), this,
+ 	   SLOT (sChangeClient(int)) );
+   glay->addMultiCellWidget( clientcombo, 4, 4, 1, 2 );
+@@ -240,8 +242,10 @@
+       dictcombo->insertItem( i18n("Turkish") );
+       sChangeEncoding( KS_E_UTF8 );
+     }
+-    else
++    else if ( iclient == KS_CLIENT_ASPELL )
+       getAvailDictsAspell();
++    else
++      getAvailDictsHunspell();
+   }
+   emit configChanged();
+ }
+@@ -399,8 +403,10 @@
+     langfnames.append("");
+     dictcombo->insertItem( i18n("Turkish") );
+   }
+-  else
++  else if ( iclient == KS_CLIENT_ASPELL )
+     getAvailDictsAspell();
++  else
++    getAvailDictsHunspell();
+ 
+   // select the used dictionary in the list
+   int whichelement=-1;
+@@ -583,6 +589,62 @@
+   }
+ }
+ 
++void KSpellConfig::getAvailDictsHunspell () {
++
++  langfnames.clear();
++  dictcombo->clear();
++  langfnames.append(""); // Default
++  dictcombo->insertItem( i18n("Hunspell Default") );
++
++  // dictionary path
++  QFileInfo dir ("/usr/share/myspell");
++  if (!dir.exists() || !dir.isDir())
++    dir.setFile ("/usr/share/hunspell");
++  if (!dir.exists() || !dir.isDir()) return;
++
++  kdDebug(750) << "KSpellConfig::getAvailDictsHunspell "
++	       << dir.filePath() << " " << dir.dirPath() << endl;
++
++  const QDir thedir (dir.filePath(),"*.dic");
++  const QStringList entryList = thedir.entryList();
++
++  kdDebug(750) << "KSpellConfig" << thedir.path() << "\n" << endl;
++  kdDebug(750) << "entryList().count()="
++	       << entryList.count() << endl;
++
++  QStringList::const_iterator entryListItr = entryList.constBegin();
++  const QStringList::const_iterator entryListEnd = entryList.constEnd();
++
++  for ( ; entryListItr != entryListEnd; ++entryListItr)
++  {
++    QString fname, lname, hname;
++    fname = *entryListItr;
++
++    // remove .dic
++    if (fname.endsWith(".dic")) fname.remove (fname.length()-4,4);
++
++    if (interpret (fname, lname, hname) && langfnames.first().isEmpty())
++    { // This one is the KDE default language
++      // so place it first in the lists (overwrite "Default")
++
++      langfnames.remove ( langfnames.begin() );
++      langfnames.prepend ( fname );
++
++      hname=i18n("default spelling dictionary"
++                 ,"Default - %1 [%2]").arg(hname).arg(fname);
++
++      dictcombo->changeItem (hname,0);
++    }
++    else
++    {
++      langfnames.append (fname);
++      hname=hname+" ["+fname+"]";
++
++      dictcombo->insertItem (hname);
++    }
++  }
++}
++
+ void
+ KSpellConfig::fillDicts( QComboBox* box, QStringList* dictionaries )
+ {
+@@ -661,8 +723,7 @@
+       box->insertItem( i18n("Turkish") );
+       langfnames.append("");
+       sChangeEncoding( KS_E_UTF8 );
+-    }
+-    else {
++    } else if ( iclient == KS_CLIENT_ASPELL ) {
+       box->clear();
+       langfnames.append(""); // Default
+       box->insertItem (i18n("ASpell Default"));
+@@ -741,6 +802,58 @@
+           }
+         }
+       }
++    } else {
++      box->clear();
++      langfnames.append(""); // Default
++      box->insertItem( i18n("Hunspell Default") );
++
++      // dictionary path
++      QFileInfo dir ("/usr/share/myspell");
++      if (!dir.exists() || !dir.isDir())
++        dir.setFile ("/usr/share/hunspell");
++      if (!dir.exists() || !dir.isDir()) return;
++
++      kdDebug(750) << "KSpellConfig::getAvailDictsHunspell "
++                   << dir.filePath() << " " << dir.dirPath() << endl;
++
++      const QDir thedir (dir.filePath(),"*.dic");
++      const QStringList entryList = thedir.entryList();
++
++      kdDebug(750) << "KSpellConfig" << thedir.path() << "\n" << endl;
++      kdDebug(750) << "entryList().count()="
++                   << entryList.count() << endl;
++
++      QStringList::const_iterator entryListItr = entryList.constBegin();
++      const QStringList::const_iterator entryListEnd = entryList.constEnd();
++
++      for ( ; entryListItr != entryListEnd; ++entryListItr)
++      {
++        QString fname, lname, hname;
++        fname = *entryListItr;
++
++        // remove .dic
++        if (fname.endsWith(".dic")) fname.remove (fname.length()-4,4);
++
++        if (interpret (fname, lname, hname) && langfnames.first().isEmpty())
++        { // This one is the KDE default language
++          // so place it first in the lists (overwrite "Default")
++
++          langfnames.remove ( langfnames.begin() );
++          langfnames.prepend ( fname );
++
++          hname=i18n("default spelling dictionary"
++                     ,"Default - %1 [%2]").arg(hname).arg(fname);
++
++          box->changeItem (hname,0);
++        }
++        else
++        {
++          langfnames.append (fname);
++          hname=hname+" ["+fname+"]";
++
++          box->insertItem (hname);
++        }
++      }
+     }
+     int whichelement = langfnames.findIndex(qsdict);
+     if ( whichelement >= 0 ) {
+diff -ur kdelibs-3.5.8/kdeui/ksconfig.h kdelibs-3.5.8-kspell-hunspell/kdeui/ksconfig.h
+--- kdelibs-3.5.8/kdeui/ksconfig.h	2005-10-10 17:06:38.000000000 +0200
++++ kdelibs-3.5.8-kspell-hunspell/kdeui/ksconfig.h	2007-12-22 01:35:25.000000000 +0100
+@@ -1,5 +1,6 @@
+ /* This file is part of the KDE libraries
+    Copyright (C) 1997 David Sweet <dsweet@kde.org>
++   Copyright (C) 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+ 
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Library General Public
+@@ -61,7 +62,8 @@
+   KS_CLIENT_ISPELL=0,
+   KS_CLIENT_ASPELL=1,
+   KS_CLIENT_HSPELL=2,
+-  KS_CLIENT_ZEMBEREK=3
++  KS_CLIENT_ZEMBEREK=3,
++  KS_CLIENT_HUNSPELL=4
+ };
+ 
+ /**
+@@ -283,6 +285,7 @@
+     KSpellConfigPrivate *d;
+     void getAvailDictsIspell();
+     void getAvailDictsAspell();
++    void getAvailDictsHunspell();
+ };
+ 
+ #endif // KDELIBS_KSCONFIG_H
+diff -ur kdelibs-3.5.8/kdeui/kspell.cpp kdelibs-3.5.8-kspell-hunspell/kdeui/kspell.cpp
+--- kdelibs-3.5.8/kdeui/kspell.cpp	2005-10-10 17:06:38.000000000 +0200
++++ kdelibs-3.5.8-kspell-hunspell/kdeui/kspell.cpp	2007-12-22 02:26:29.000000000 +0100
+@@ -2,6 +2,7 @@
+    Copyright (C) 1997 David Sweet <dsweet@kde.org>
+    Copyright (C) 2000-2001 Wolfram Diestel <wolfram@steloj.de>
+    Copyright (C) 2003 Zack Rusin <zack@kde.org>
++   Copyright (C) 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+ 
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Library General Public
+@@ -181,9 +182,14 @@
+     *proc << "zpspell";
+     kdDebug(750) << "Using zemberek(zpspell)" << endl;
+     break;
++  case KS_CLIENT_HUNSPELL:
++    *proc << "hunspell";
++    kdDebug(750) << "Using hunspell" << endl;
++    break;
+   }
+ 
+-  if ( ksconfig->client() == KS_CLIENT_ISPELL || ksconfig->client() == KS_CLIENT_ASPELL )
++  // Hunspell doesn't need all of these options, but it'll ignore those it doesn't understand.
++  if ( ksconfig->client() == KS_CLIENT_ISPELL || ksconfig->client() == KS_CLIENT_ASPELL || ksconfig->client() == KS_CLIENT_HUNSPELL )
+   {
+     *proc << "-a" << "-S";
+ 
+@@ -201,8 +207,8 @@
+       *proc << "-t";
+       break;
+     case Nroff:
+-      //only ispell supports
+-      if ( ksconfig->client() == KS_CLIENT_ISPELL )
++      //only ispell and hunspell support
++      if ( ksconfig->client() == KS_CLIENT_ISPELL || ksconfig->client() == KS_CLIENT_HUNSPELL )
+         *proc << "-n";
+       break;
+     case Text:
+@@ -239,7 +245,60 @@
+   // option, so kspell tries again without it.  That's why as 'ps -ax'
+   // shows "ispell -a -S ..." withou the "-Tlatin2" option.
+ 
+-    if ( trystart<1 ) {
++    if ( ksconfig->client() == KS_CLIENT_HUNSPELL && trystart<1 ) {
++      // Note: This sets I/O encoding. Hunspell correctly handles dictionary encoding != I/O encoding.
++      // It will be faster if the I/O encoding matches the dictionary encoding, but using UTF-8 is always safe.
++      switch ( ksconfig->encoding() )
++      {
++      case KS_E_LATIN1:
++	*proc << "-i" << "ISO-8859-1";
++	break;
++      case KS_E_LATIN2:
++	*proc << "-i" << "ISO-8859-2";
++	break;
++      case KS_E_LATIN3:
++	*proc << "-i" << "ISO-8859-3";
++        break;
++      case KS_E_LATIN4:
++	*proc << "-i" << "ISO-8859-4";
++        break;
++      case KS_E_LATIN5:
++	*proc << "-i" << "ISO-8859-5";
++        break;
++      case KS_E_LATIN7:
++	*proc << "-i" << "ISO-8859-7";
++        break;
++      case KS_E_LATIN8:
++	*proc << "-i" << "ISO-8859-8";
++        break;
++      case KS_E_LATIN9:
++	*proc << "-i" << "ISO-8859-9";
++        break;
++      case KS_E_LATIN13:
++	*proc << "-i" << "ISO-8859-13";
++        break;
++      case KS_E_LATIN15:
++	*proc << "-i" << "ISO-8859-15";
++        break;
++      case KS_E_UTF8:
++	*proc << "-i" << "UTF-8";
++        break;
++      case KS_E_KOI8R:
++	*proc << "-i" << "KOI8-R";
++        break;
++      case KS_E_KOI8U:
++	*proc << "-i" << "KOI8-U";
++        break;
++      case KS_E_CP1251:
++	*proc << "-i" << "CP1251";
++        break;
++      case KS_E_CP1255:
++	*proc << "-i" << "CP1255";
++        break;
++      default:
++        break;
++      }
++    } else if ( trystart<1 ) {
+       switch ( ksconfig->encoding() )
+       {
+       case KS_E_LATIN1:

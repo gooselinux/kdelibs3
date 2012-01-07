@@ -1,0 +1,21 @@
+--- kdelibs-3.5.1/kded/applications.menu.orig	2006-02-21 14:30:11.000000000 +0100
++++ kdelibs-3.5.1/kded/applications.menu	2006-02-21 14:30:16.000000000 +0100
+@@ -31,12 +31,16 @@
+ 					<Category>Core</Category>
+ 					<Not><Category>KDE</Category></Not>
+ 				</And>
+-				<!-- Don't list SUSE's YaST in here -->
+-				<Category>X-SuSE-YaST</Category>
++				<Category>X-Red-Hat-Base</Category>
+ 			</Not>
+ 		</Include>
+ 	</Menu>
+        <Menu>
++                <Name>System Settings</Name>
++                <MergeFile>system-settings.menu</MergeFile>
++       </Menu>
++
++       <Menu>
+                 <Name>Development</Name>
+                 <Directory>kde-development.directory</Directory>
+                 <Menu>

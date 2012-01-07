@@ -1,0 +1,11 @@
+--- kdelibs-3.4.0/admin/acinclude.m4.in.orig	2005-04-01 19:01:33.000000000 +0200
++++ kdelibs-3.4.0/admin/acinclude.m4.in	2005-04-01 19:03:15.000000000 +0200
+@@ -5317,7 +5317,7 @@
+   kde_qtdir="$with_qt_dir"
+ fi
+ 
+-AC_FIND_FILE(qsql.html, [ $kde_qtdir/doc/html $QTDIR/doc/html /usr/share/doc/packages/qt3/html /usr/lib/qt/doc /usr/lib/qt3/doc /usr/lib/qt3/doc/html /usr/doc/qt3/html /usr/doc/qt3 /usr/share/doc/qt3-doc /usr/share/qt3/doc/html /usr/X11R6/share/doc/qt/html ], QTDOCDIR)
++AC_FIND_FILE(qsql.html, [ $kde_qtdir/doc/html $QTDOC/html $QTDIR/doc/html /usr/share/doc/packages/qt3/html /usr/lib/qt/doc /usr/lib/qt3/doc /usr/lib/qt3/doc/html /usr/doc/qt3/html /usr/doc/qt3 /usr/share/doc/qt3-doc /usr/share/qt3/doc/html /usr/X11R6/share/doc/qt/html ], QTDOCDIR)
+ AC_MSG_RESULT($QTDOCDIR)
+ 
+ AC_SUBST(QTDOCDIR)

@@ -1,0 +1,13 @@
+--- kdelibs-3.5.10/kio/kio/karchive.cpp.orig	2009-12-09 18:40:26.000000000 +0100
++++ kdelibs-3.5.10/kio/kio/karchive.cpp	2009-12-09 18:41:14.000000000 +0100
+@@ -588,7 +588,9 @@
+ 
+ void KArchiveDirectory::addEntry( KArchiveEntry* entry )
+ {
+-  Q_ASSERT( !entry->name().isEmpty() );
++  if( entry->name().isEmpty() )
++    return;
++
+   if( m_entries[ entry->name() ] ) {
+       kdWarning() << "KArchiveDirectory::addEntry: directory " << name()
+                   << " has entry " << entry->name() << " already" << endl;

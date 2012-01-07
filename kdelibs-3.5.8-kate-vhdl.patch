@@ -1,0 +1,10 @@
+--- kdelibs-3.5.8/kate/data/vhdl.xml.orig	2007-10-18 19:34:32.000000000 +0200
++++ kdelibs-3.5.8/kate/data/vhdl.xml	2007-10-18 19:33:04.000000000 +0200
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE language SYSTEM "language.dtd">
+-<language name="VHDL" version="1.04" kateversion="2.1" section="Hardware" extensions="*.vhdl;*.vhd" mimetype="text/x-vhdl">
++<language name="VHDL" version="1.04" kateversion="2.1" section="Hardware" extensions="*.vhdl;*.vhd;*.vst;*.vbe" mimetype="text/x-vhdl">
+     <highlighting>
+         <list name="keywords">
+             <item> access </item>

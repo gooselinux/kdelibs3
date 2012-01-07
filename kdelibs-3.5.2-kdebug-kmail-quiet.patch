@@ -1,0 +1,11 @@
+--- kdelibs-3.5.2/kdecore/kdebugrc.orig	2006-05-03 16:12:27.000000000 +0200
++++ kdelibs-3.5.2/kdecore/kdebugrc	2006-05-03 16:12:35.000000000 +0200
+@@ -82,7 +82,7 @@
+ 
+ # KMail
+ [5006]
+-InfoOutput=2
++InfoOutput=4
+ 
+ # KitchenSync (Syncing Algorithm)
+ [5250]

@@ -1,0 +1,86 @@
+diff -Nur kdelibs-3.5.6.orig/configure.in.in kdelibs-3.5.6/configure.in.in
+--- kdelibs-3.5.6.orig/configure.in.in	2006-05-22 20:14:23.000000000 +0200
++++ kdelibs-3.5.6/configure.in.in	2007-02-05 23:01:44.000000000 +0100
+@@ -395,7 +395,7 @@
+ [], with_utempter=check)
+ if test "x$with_utempter" != xno; then
+   kde_have_utempter=yes
+-  AC_CHECK_LIB(utempter, addToUtmp, [LIBUTEMPTER=-lutempter], kde_have_utempter=no)
++  AC_CHECK_LIB(utempter, utempter_add_record, [LIBUTEMPTER=-lutempter], kde_have_utempter=no)
+   AC_SUBST(LIBUTEMPTER)
+   if test "$kde_have_utempter" = "yes"; then
+     AC_DEFINE_UNQUOTED(HAVE_UTEMPTER, 1, [Define if you have the utempter helper for utmp managment])
+diff -Nur kdelibs-3.5.6.orig/kdecore/kpty.cpp kdelibs-3.5.6/kdecore/kpty.cpp
+--- kdelibs-3.5.6.orig/kdecore/kpty.cpp	2006-05-22 20:14:21.000000000 +0200
++++ kdelibs-3.5.6/kdecore/kpty.cpp	2007-02-05 23:01:44.000000000 +0100
+@@ -80,6 +80,10 @@
+ # include <utmp.h>
+ #endif
+ 
++#ifdef HAVE_UTEMPTER
++# include <utempter.h>
++#endif
++
+ #ifdef HAVE_TERMIOS_H
+ /* for HP-UX (some versions) the extern C is needed, and for other
+    platforms it doesn't hurt */
+@@ -138,21 +142,6 @@
+ // private functions //
+ ///////////////////////
+ 
+-#ifdef HAVE_UTEMPTER
+-class KProcess_Utmp : public KProcess
+-{
+-public:
+-   int commSetupDoneC()
+-   {
+-     dup2(cmdFd, 0);
+-     dup2(cmdFd, 1);
+-     dup2(cmdFd, 3);
+-     return 1;
+-   }
+-   int cmdFd;
+-};
+-#endif
+-
+ #define BASE_CHOWN "kgrantpty"
+ 
+ 
+@@ -399,12 +388,8 @@
+ void KPty::login(const char *user, const char *remotehost)
+ {
+ #ifdef HAVE_UTEMPTER
+-    KProcess_Utmp utmp;
+-    utmp.cmdFd = d->masterFd;
+-    utmp << "/usr/sbin/utempter" << "-a" << d->ttyName << "";
+-    utmp.start(KProcess::Block);
++    utempter_add_record (d->masterFd, remotehost);
+     Q_UNUSED(user);
+-    Q_UNUSED(remotehost);
+ #elif defined(USE_LOGIN)
+     const char *str_ptr;
+     struct utmp l_struct;
+@@ -442,10 +427,7 @@
+ void KPty::logout()
+ {
+ #ifdef HAVE_UTEMPTER
+-    KProcess_Utmp utmp;
+-    utmp.cmdFd = d->masterFd;
+-    utmp << "/usr/sbin/utempter" << "-d" << d->ttyName;
+-    utmp.start(KProcess::Block);
++    utempter_remove_record (d->masterFd);
+ #elif defined(USE_LOGIN)
+     const char *str_ptr = d->ttyName.data();
+     if (!memcmp(str_ptr, "/dev/", 5))
+diff -Nur kdelibs-3.5.6.orig/kdecore/Makefile.am kdelibs-3.5.6/kdecore/Makefile.am
+--- kdelibs-3.5.6.orig/kdecore/Makefile.am	2006-10-01 19:33:38.000000000 +0200
++++ kdelibs-3.5.6/kdecore/Makefile.am	2007-02-05 23:01:44.000000000 +0100
+@@ -115,7 +115,7 @@
+ 	kuser.cpp kconfigskeleton.cpp kconfigdialogmanager.cpp klockfile.cpp \
+ 	kqiodevicegzip_p.cpp ktimezones.cpp
+ 
+-libkdecore_la_LDFLAGS = $(QT_LDFLAGS) $(KDE_RPATH) $(KDE_MT_LDFLAGS) $(X_LDFLAGS) $(USER_LDFLAGS) -version-info 6:0:2 -no-undefined
++libkdecore_la_LDFLAGS = $(QT_LDFLAGS) $(KDE_RPATH) $(KDE_MT_LDFLAGS) $(LIBUTEMPTER) $(X_LDFLAGS) $(USER_LDFLAGS) -version-info 6:0:2 -no-undefined
+ libkdecore_la_LIBADD = malloc/libklmalloc.la network/libkdecorenetwork.la $(SVGICON_LIB) ../dcop/libDCOP.la ../libltdl/libltdlc.la $(LIB_XEXT) $(LIBRESOLV) $(LIBUTIL) $(LIBART_LIBS) $(LIB_IDN) ../kdefx/libkdefx.la
+ libkdecore_la_NMCHECK = $(srcdir)/libkdecore.nmcheck
+ libkdecore_la_NMCHECKWEAK = $(srcdir)/libkdecore_weak.nmcheck $(srcdir)/libqt-mt_weak.nmcheck \

@@ -1,0 +1,25 @@
+--- kdelibs-3.5.2/kdeprint/cups/cupsdconf2/cupsd.conf.template.tn	2006-05-22 14:51:46.000000000 +0200
++++ kdelibs-3.5.2/kdeprint/cups/cupsdconf2/cupsd.conf.template	2006-05-22 15:27:27.000000000 +0200
+@@ -275,9 +275,9 @@
+ # must be <b>sys</b>, however you can configure things for another
+ # group as needed.</p>
+ # <p>
+-# <i>ex</i>: sys</p>
++# <i>ex</i>: lp</p>
+ $$
+-#Group sys
++#Group lp
+ @@
+ 
+ %%ripcache
+--- kdelibs-3.5.2/kdeprint/cups/cupsdconf2/cupsdconf.cpp.tn	2006-05-22 15:26:15.000000000 +0200
++++ kdelibs-3.5.2/kdeprint/cups/cupsdconf2/cupsdconf.cpp	2006-05-22 15:26:32.000000000 +0200
+@@ -115,7 +115,7 @@
+ 	maxjobsperprinter_ = 0;
+ 	maxjobsperuser_ = 0;
+ 	user_ = "lp";
+-	group_ = "sys";
++	group_ = "lp";
+ 	ripcache_ = "8m";
+ 	filterlimit_ = 0;
+ 	browsing_ = true;

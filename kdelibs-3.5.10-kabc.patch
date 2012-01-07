@@ -1,0 +1,134 @@
+--- kdelibs-3.5.10/kabc/scripts/field.src.cpp.orig	2009-12-09 18:51:15.000000000 +0100
++++ kdelibs-3.5.10/kabc/scripts/field.src.cpp	2009-12-09 18:51:54.000000000 +0100
+@@ -36,7 +36,7 @@
+                const QString &app = QString::null )
+       : mFieldId( fieldId ), mCategory( category ), mLabel( label ),
+         mKey( key ), mApp( app ) {}
+-  
++
+     enum FieldId
+     {
+       CustomField,
+@@ -45,11 +45,11 @@
+ 
+     int fieldId() { return mFieldId; }
+     int category() { return mCategory; }
+-    
++
+     QString label() { return mLabel; }
+     QString key() { return mKey; }
+     QString app() { return mApp; }
+-    
++
+   private:
+     int mFieldId;
+     int mCategory;
+@@ -184,6 +184,8 @@
+       return a.phoneNumber( PhoneNumber::Pager ).number();
+     case FieldImpl::HomeAddressStreet:
+       return a.address( Address::Home ).street();
++    case FieldImpl::HomeAddressPostOfficeBox:
++      return a.address( Address::Home ).postOfficeBox();
+     case FieldImpl::HomeAddressLocality:
+       return a.address( Address::Home ).locality();
+     case FieldImpl::HomeAddressRegion:
+@@ -196,6 +198,8 @@
+       return a.address( Address::Home ).label();
+     case FieldImpl::BusinessAddressStreet:
+       return a.address( Address::Work ).street();
++    case FieldImpl::BusinessAddressPostOfficeBox:
++      return a.address( Address::Work ).postOfficeBox();
+     case FieldImpl::BusinessAddressLocality:
+       return a.address( Address::Work ).locality();
+     case FieldImpl::BusinessAddressRegion:
+@@ -266,6 +270,13 @@
+         a.insertAddress( address );
+         return true;
+       }
++    case FieldImpl::HomeAddressPostOfficeBox:
++      {
++        KABC::Address address = a.address( Address::Home );
++        address.setPostOfficeBox( value );
++        a.insertAddress( address );
++        return true;
++      }
+     case FieldImpl::HomeAddressLocality:
+       {
+         KABC::Address address = a.address( Address::Home );
+@@ -308,6 +319,13 @@
+         a.insertAddress( address );
+         return true;
+       }
++    case FieldImpl::BusinessAddressPostOfficeBox:
++      {
++        KABC::Address address = a.address( Address::Work );
++        address.setPostOfficeBox( value );
++        a.insertAddress( address );
++        return true;
++      }
+     case FieldImpl::BusinessAddressLocality:
+       {
+         KABC::Address address = a.address( Address::Work );
+@@ -438,7 +456,7 @@
+                         const Field::List &fields )
+ {
+   QValueList<int> fieldIds;
+-  
++
+   int custom = 0;
+   Field::List::ConstIterator it;
+   for( it = fields.begin(); it != fields.end(); ++it ) {
+@@ -452,7 +470,7 @@
+                        QString::number( custom++ ), customEntry );
+     }
+   }
+-  
++
+   cfg->writeEntry( identifier, fieldIds );
+ }
+ 
+@@ -460,7 +478,7 @@
+ {
+   KConfig *cfg = KGlobal::config();
+   KConfigGroupSaver( cfg, "KABCFields" );
+- 
++
+   return restoreFields( cfg, identifier );
+ }
+ 
+@@ -485,7 +503,7 @@
+     }
+     fields.append( new Field( f ) );
+   }
+-  
++
+   return fields;
+ }
+ 
+@@ -496,7 +514,7 @@
+   if ( !sameId ) return false;
+ 
+   if ( mImpl->fieldId() != FieldImpl::CustomField ) return true;
+-  
++
+   return mImpl->key() == field->mImpl->key();
+ }
+ 
+--- kdelibs-3.5.10/kabc/scripts/entrylist.orig	2009-12-09 18:48:40.000000000 +0100
++++ kdelibs-3.5.10/kabc/scripts/entrylist	2009-12-09 18:50:42.000000000 +0100
+@@ -29,6 +29,7 @@
+ 
+ #Address address
+ LF,home address street,,QString,homeAddressStreet,Address|Personal
++LF,home address post office box,,QString,homeAddressPostOfficeBox,Address|Personal
+ LF,home address city,,QString,homeAddressLocality,Address|Personal
+ LF,home address state,,QString,homeAddressRegion,Address|Personal
+ LF,home address zip code,,QString,homeAddressPostalCode,Address|Personal
+@@ -36,6 +37,7 @@
+ LF,home address label,,QString,homeAddressLabel,Address|Personal
+ 
+ LF,business address street,,QString,businessAddressStreet,Address|Organization
++LF,business address post office box,,QString,businessAddressPostOfficeBox,Address|Organization
+ LF,business address city,,QString,businessAddressLocality,Address|Organization
+ LF,business address state,,QString,businessAddressRegion,Address|Organization
+ LF,business address zip code,,QString,businessAddressPostalCode,Address|Organization

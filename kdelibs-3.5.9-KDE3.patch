@@ -1,0 +1,41 @@
+diff -up kdelibs-3.5.9/kio/kio/kservice.cpp.KDE3 kdelibs-3.5.9/kio/kio/kservice.cpp
+--- kdelibs-3.5.9/kio/kio/kservice.cpp.KDE3	2008-02-13 03:41:06.000000000 -0600
++++ kdelibs-3.5.9/kio/kio/kservice.cpp	2008-05-15 15:36:13.000000000 -0500
+@@ -701,7 +701,7 @@ bool KService::noDisplay() const {
+   {
+      QString aValue = it.data().toString();
+      QStringList aList = QStringList::split(';', aValue);
+-     if (!aList.contains("KDE"))
++     if (!(aList.contains("KDE") || aList.contains("KDE3")) )
+         return true;
+   }
+ 
+@@ -710,7 +710,7 @@ bool KService::noDisplay() const {
+   {
+      QString aValue = it.data().toString();
+      QStringList aList = QStringList::split(';', aValue);
+-     if (aList.contains("KDE"))
++     if (aList.contains("KDE") || aList.contains("KDE3"))
+         return true;
+   }
+   
+diff -up kdelibs-3.5.9/kio/kio/kservicegroup.cpp.KDE3 kdelibs-3.5.9/kio/kio/kservicegroup.cpp
+--- kdelibs-3.5.9/kio/kio/kservicegroup.cpp.KDE3	2007-05-14 02:52:35.000000000 -0500
++++ kdelibs-3.5.9/kio/kio/kservicegroup.cpp	2008-05-15 15:39:34.000000000 -0500
+@@ -76,12 +76,14 @@ KServiceGroup::KServiceGroup( const QStr
+   QStringList tmpList;
+   if (config.hasKey("OnlyShowIn"))
+   {
+-     if (!config.readListEntry("OnlyShowIn", ';').contains("KDE"))
++     QStringList onlyShowInList = config.readListEntry("OnlyShowIn", ';');
++     if (! (onlyShowInList.contains("KDE") || onlyShowInList.contains("KDE3")))
+         d->m_bNoDisplay = true;
+   }
+   if (config.hasKey("NotShowIn"))
+   {
+-     if (config.readListEntry("NotShowIn", ';').contains("KDE"))
++     QStringList notShowInList = config.readListEntry("NotShowIn", ';');
++     if (notShowInList.contains("KDE") || notShowInList.contains("KDE3"))
+         d->m_bNoDisplay = true;
+   }
+ 

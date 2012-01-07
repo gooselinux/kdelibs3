@@ -1,0 +1,15 @@
+--- kdelibs-3.5.7/kinit/autostart.cpp.orig	2007-09-25 11:32:07.000000000 +0200
++++ kdelibs-3.5.7/kinit/autostart.cpp	2007-09-25 14:14:29.000000000 +0200
+@@ -48,6 +48,12 @@ AutoStart::AutoStart( bool new_startup )
+   m_startList = new AutoStartList;
+   m_startList->setAutoDelete(true);
+   KGlobal::dirs()->addResourceType("autostart", "share/autostart");
++  QString xdgconf_dirs = KGlobal::dirs()->kfsstnd_xdg_conf_prefixes();
++  if (xdgconf_dirs.isEmpty())
++	  xdgconf_dirs = "/etc/xdg";
++  QStringList xdgconf_dirslist = QStringList::split( ':', xdgconf_dirs );
++  for ( QStringList::Iterator d = xdgconf_dirslist.begin(); d != xdgconf_dirslist.end(); ++d )
++	  KGlobal::dirs()->addResourceDir("autostart", (*d) + "/autostart");
+ }
+ 
+ AutoStart::~AutoStart()
