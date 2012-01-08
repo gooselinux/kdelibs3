@@ -26,12 +26,9 @@
 %define include_crystalsvg 1
 
 Summary: KDE 3 Libraries
+Name:    kdelibs3
 Version: 3.5.10
-Release: 23%{?dist}
-
-Name: kdelibs3
-Obsoletes: kdelibs < 6:%{version}-%{release}
-Provides: kdelibs = 6:%{version}-%{release}
+Release: 24%{?dist}
 
 License: LGPLv2
 Url: http://www.kde.org/
@@ -192,8 +189,6 @@ kimgio (image manipulation).
 %package devel
 Group: Development/Libraries
 Summary: Header files and documentation for compiling KDE 3 applications.
-Obsoletes: kdelibs-devel < 6:%{version}-%{release}
-Provides:  kdelibs-devel = 6:%{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{qt3}-devel
 Requires: openssl-devel
@@ -206,11 +201,8 @@ applications for KDE 3.
 %package apidocs
 Group: Development/Documentation
 Summary: KDE 3 API documentation.
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}
-Obsoletes: kdelibs-apidocs < 6:%{version}-%{release}
-Provides:  kdelibs-apidocs = 6:%{version}-%{release}
+Requires: kde-filesystem
 BuildArch: noarch
-
 %description apidocs
 This package includes the KDE 3 API documentation in HTML
 format for easy browsing
@@ -588,6 +580,10 @@ touch --no-create %{_datadir}/icons/crystalsvg 2> /dev/null || :
 
 
 %changelog
+* Thu Jun 10 2010 Rex Dieter <rdieter@fedoraproject.org> - 3.5.10-24
+- drop old Obsoletes/Provides: kdelibs(-devel/-apidocs)
+- -apidocs: Requires: kde-filesystem
+
 * Wed Jan 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 3.5.10-23
 - patch for kde-config --kde-version option (kde#224540)
 
