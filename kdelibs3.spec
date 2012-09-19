@@ -164,7 +164,7 @@ BuildRequires: libutempter-devel
 BuildRequires: findutils
 BuildRequires: jasper-devel
 BuildRequires: OpenEXR-devel
-BuildRequires: automake libtool
+BuildRequires: automake
 
 %if "%{name}" != "kdelibs" && "%{?apidocs}" != "1"
 Obsoletes: kdelibs-apidocs < 6:%{version}-%{release}
