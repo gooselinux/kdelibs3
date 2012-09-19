@@ -28,7 +28,7 @@
 Summary: KDE 3 Libraries
 Name:    kdelibs3
 Version: 3.5.10
-Release: 24%{?dist}
+Release: 23%{?dist}.goose.1
 
 License: LGPLv2
 Url: http://www.kde.org/
@@ -580,7 +580,7 @@ touch --no-create %{_datadir}/icons/crystalsvg 2> /dev/null || :
 
 
 %changelog
-* Thu Jun 10 2010 Rex Dieter <rdieter@fedoraproject.org> - 3.5.10-24
+* Thu Jun 10 2010 Rex Dieter <rdieter@fedoraproject.org> - 3.5.10-23.goose.1
 - drop old Obsoletes/Provides: kdelibs(-devel/-apidocs)
 - -apidocs: Requires: kde-filesystem
 
