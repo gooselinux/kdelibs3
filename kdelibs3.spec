@@ -28,7 +28,7 @@
 Summary: KDE 3 Libraries
 Name:    kdelibs3
 Version: 3.5.10
-Release: 24%{?dist}
+Release: 23%{?dist}.goose.1
 
 License: LGPLv2
 Url: http://www.kde.org/
